@@ -1,0 +1,11 @@
+{
+  "id": "cat_code_commenter",
+  "name": "CatCodeCommenter",
+  "description": "Description not found for this plugin. Please create a `plugin.json` in the plugin folder.",
+  "author_name": "Cheshire Cat",
+  "author_url": "",
+  "plugin_url": "",
+  "tags": "vs code, coding",
+  "thumb": "",
+  "version": "0.0.1"
+    }
