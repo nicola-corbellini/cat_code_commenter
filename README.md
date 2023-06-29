@@ -4,4 +4,4 @@ This plugin makes the [Cheshire Cat](https://github.com/cheshire-cat-ai/core) a 
 
 ## Installation
 
-Just clone the repository and unzip inside the Cat.
+Download the repository and put the folder inside the Cat at: `/core/cat/plugins/`.
