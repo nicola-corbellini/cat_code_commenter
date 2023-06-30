@@ -58,7 +58,7 @@ def before_cat_reads_message(user_message_json: dict, cat) -> dict:
     if answer.lower() == "yes":
         cat.working_memory["valid_code"] = True
     else:
-        cat.working_memory["valid_code"] = True
+        cat.working_memory["valid_code"] = False
     return user_message_json
 
 
