@@ -5,10 +5,11 @@ Here is a collection of methods to hook into the Cat execution pipeline.
 """
 
 from cat.mad_hatter.decorators import hook
+from cat.log import log
 
 # Called when a user message arrives.
 # Useful to edit/enrich user input (e.g. translation)
-@hook(priority=1)
+@hook(priority=0)
 def before_cat_reads_message(user_message_json: dict, cat) -> dict:
     """Hook the incoming user's JSON dictionary.
 
@@ -107,5 +108,19 @@ def before_cat_sends_message(message: dict, cat) -> dict:
 
     """
     # Add valid code check in JSON response
-    message["valid_code"] = cat.working_memory["valid_code"]
+    # message["valid_code"] = cat.working_memory["valid_code"]
+
+    answer = cat.llm(
+        f"""Reformulate this sentence in a JSON with this form.
+        Example:
+            {{  
+                'language': programming language in the sentence.
+                'commented_code': the code here
+            }}
+        Sentence:
+        {message["content"]}
+    """)
+
+    message["content"] = answer
+    log(answer, "ERROR")
     return message
