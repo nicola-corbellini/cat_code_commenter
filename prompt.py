@@ -111,13 +111,15 @@ def agent_prompt_suffix(cat) -> str:
     - {agent_scratchpad} is where the *Agent* can concatenate tools use and multiple calls to the LLM.
 
     """
-    suffix = """Comment the following code:
- Code: 
+    suffix = """Add comments to the code.
+ Code
+ ----
  {input}
 
-Only answer with commented code.
+Only answer with commented code. Don't add anything else.
 
 {agent_scratchpad}"""
+
     return suffix
 
 
