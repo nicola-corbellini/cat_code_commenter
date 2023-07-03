@@ -10,59 +10,15 @@ from cat.log import log
 
 # Called when a user message arrives.
 # Useful to edit/enrich user input (e.g. translation)
-@hook(priority=-1)
+@hook(priority=1)
 def before_cat_reads_message(user_message_json: dict, cat) -> dict:
-    """Hook the incoming user's JSON dictionary.
+    # Get task
+    cat.working_memory["code_extension"] = {}
 
-    Allows to edit and enrich the incoming message received from the WebSocket connection.
+    cat.working_memory["code_extension"]["task"] = user_message_json["task"]
+    cat.working_memory["code_extension"]["language"] = user_message_json["language"]
 
-    For instance, this hook can be used to translate the user's message before feeding it to the Cat.
-    Another use case is to add custom keys to the JSON dictionary.
-
-    The incoming message is a JSON dictionary with keys:
-        {
-            "text": message content
-        }
-
-    Parameters
-    ----------
-    user_message_json : dict
-        JSON dictionary with the message received from the chat.
-    cat : CheshireCat
-        Cheshire Cat instance.
-
-
-    Returns
-    -------
-    user_message_json : dict
-        Edited JSON dictionary that will be fed to the Cat.
-
-    Notes
-    -----
-    For example:
-
-        {
-            "text": "Hello Cheshire Cat!",
-            "custom_key": True
-        }
-
-    where "custom_key" is a newly added key to the dictionary to store any data.
-
-    """
-    # Ask Language Model is the given input is code
-    prompt = f"""Is this a valid code?
-    {user_message_json['text']}
-    Answer yes or no."""
-
-    answer = cat.llm(prompt)
-
-    # Save check in Working Memory
-    if answer.lower() == "yes":
-        cat.working_memory["valid_code"] = True
-    else:
-        cat.working_memory["valid_code"] = False
     return user_message_json
-
 
 
 # Hook called just before sending response to a client.
