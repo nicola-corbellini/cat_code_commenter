@@ -13,10 +13,11 @@ from cat.log import log
 @hook(priority=1)
 def before_cat_reads_message(user_message_json: dict, cat) -> dict:
     # Get task
-    cat.working_memory["code_extension"] = {}
+    if "task" in user_message_json["prompt_settings"]:  # and "language" in user_message_json.keys():
+        cat.working_memory["task"] = user_message_json["prompt_settings"]["task"]
 
-    cat.working_memory["code_extension"]["task"] = user_message_json["task"]
-    cat.working_memory["code_extension"]["language"] = user_message_json["language"]
+    if "language" in user_message_json["prompt_settings"]:
+        cat.working_memory["language"] = user_message_json["prompt_settings"]["language"]
 
     return user_message_json
 
@@ -65,19 +66,23 @@ def before_cat_sends_message(message: dict, cat) -> dict:
 
     """
     # Add valid code check in JSON response
-    # message["valid_code"] = cat.working_memory["valid_code"]
+    log(message, "ERROR")
 
-    answer = cat.llm(
-        f"""Structure the sentence in a JSON with this format:
-            {{  
-                'language': the programming language name
-                'code': the code
-            }}
-        Sentence
-        --------
-        {message["content"]}
-    """)
+    if "task" in cat.working_memory and cat.working_memory["task"] == "comment":
+        answer = cat.llm.predict(
+            f"""Write a JSON like this:
+                {{  
+                    'language': the programming language name
+                    'code': the code
+                }}
+            Sentence
+            --------
+            {message["content"]}
+            Only write the structered sentence.
+        """)
 
-    message["content"] = answer
-    log(answer, "ERROR")
+        message["content"] = answer
+
+        log(answer, "ERROR")
+
     return message
