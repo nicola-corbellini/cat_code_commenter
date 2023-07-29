@@ -13,7 +13,7 @@ from cat.log import log
 @hook(priority=1)
 def before_cat_reads_message(user_message_json: dict, cat) -> dict:
     # Get task
-    if "task" in user_message_json["prompt_settings"]:  # and "language" in user_message_json.keys():
+    if "task" in user_message_json["prompt_settings"]:
         cat.working_memory["task"] = user_message_json["prompt_settings"]["task"]
 
     if "language" in user_message_json["prompt_settings"]:
@@ -24,65 +24,23 @@ def before_cat_reads_message(user_message_json: dict, cat) -> dict:
 
 # Hook called just before sending response to a client.
 @hook(priority=1)
-def before_cat_sends_message(message: dict, cat) -> dict:
-    """Hook the outgoing Cat's message.
+def before_cat_sends_message(message: dict, cat):
 
-    Allows to edit the JSON dictionary that will be sent to the client via WebSocket connection.
-
-    This hook can be used to edit the message sent to the user or to add keys to the dictionary.
-
-    Parameters
-    ----------
-    message : dict
-        JSON dictionary to be sent to the WebSocket client.
-    cat : CheshireCat
-        Cheshire Cat instance.
-
-    Returns
-    -------
-    message : dict
-        Edited JSON dictionary with the Cat's answer.
-
-    Notes
-    -----
-    Default `message` is::
-
-            {
-                "error": False,
-                "type": "chat",
-                "content": cat_message["output"],
-                "why": {
-                    "input": cat_message["input"],
-                    "output": cat_message["output"],
-                    "intermediate_steps": cat_message["intermediate_steps"],
-                    "memory": {
-                        "vectors": {
-                            "episodic": episodic_report,
-                            "declarative": declarative_report
-                        }
-                    },
-                },
-            }
-
-    """
     # Add valid code check in JSON response
-    log(message, "ERROR")
-
     if "task" in cat.working_memory and cat.working_memory["task"] == "comment":
-        answer = cat.llm.predict(
-            f"""Write a JSON like this:
-                {{  
-                    'language': the programming language name
-                    'code': the code
-                }}
-            Sentence
-            --------
-            {message["content"]}
-            Only write the structered sentence.
-        """)
+        answer = cat.llm(
+            f"""Structure the sentence in a JSON with this format:
+                    {{  
+                        'language': the programming language name
+                        'code': the code
+                    }}
+                Sentence
+                --------
+                {message["content"]}
+            """)
 
         message["content"] = answer
 
-        log(answer, "ERROR")
+    log(message, "ERROR")
 
     return message

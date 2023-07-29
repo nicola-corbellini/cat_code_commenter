@@ -22,9 +22,10 @@ def agent_prompt_prefix(cat) -> str:
 
 @hook(priority=1)
 def agent_prompt_suffix(cat) -> str:
-
-    task = cat.working_memory["task"]
     using_vs_ext = "task" in cat.working_memory
+
+    if using_vs_ext:
+        task = cat.working_memory["task"]
 
     if using_vs_ext and task == "comment":
         suffix = """{episodic_memory}
@@ -47,15 +48,23 @@ def agent_prompt_suffix(cat) -> str:
 
     {input}"""
 
+    else:
+        suffix = """
+        # Context
+
+        {episodic_memory}
+
+        {declarative_memory}
+
+        ## Conversation until now:{chat_history}
+         - Human: {input}
+         - AI: """
+
     return suffix
 
-    # You are an expert software engineer that writes good quality code.
-    # Complete the code using the comment.
-    # Code
-    # ----
+
 @hook(priority=1)
 def agent_prompt_chat_history(chat_history: List[Dict], cat) -> str:
-
     history = ""
-   
+
     return history
