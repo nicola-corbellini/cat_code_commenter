@@ -1,11 +1,10 @@
 {
-  "id": "cat_code_commenter",
-  "name": "CatCodeCommenter",
-  "description": "Description not found for this plugin. Please create a `plugin.json` in the plugin folder.",
-  "author_name": "Cheshire Cat",
+  "name": "Code Commenter",
+  "description": "Official plugin of the Cheshire Cat VSCode extension",
+  "author_name": "Nicola Corbellini",
   "author_url": "",
-  "plugin_url": "",
-  "tags": "vs code, coding",
+  "plugin_url": "https://github.com/nicola-corbellini/cat_code_commenter",
+  "tags": "vscode, coding, llm, comment, code",
   "thumb": "",
   "version": "0.0.1"
-    }
+}
