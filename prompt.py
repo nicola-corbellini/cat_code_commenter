@@ -66,5 +66,8 @@ def agent_prompt_suffix(cat) -> str:
 @hook(priority=1)
 def agent_prompt_chat_history(chat_history: List[Dict], cat) -> str:
     history = ""
+    if "task" not in cat.working_memory:
+        for turn in chat_history:
+            history += f"\n - {turn['who']}: {turn['message']}"
 
     return history
