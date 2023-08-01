@@ -41,6 +41,8 @@ def before_cat_sends_message(message: dict, cat):
 
         message["content"] = answer
 
+        cat.working_memory.pop("task")
+
     log(message, "ERROR")
 
     return message
