@@ -13,11 +13,12 @@ from cat.log import log
 @hook(priority=1)
 def before_cat_reads_message(user_message_json: dict, cat) -> dict:
     # Get task
-    if "task" in user_message_json["prompt_settings"]:
-        cat.working_memory["task"] = user_message_json["prompt_settings"]["task"]
+    if "prompt_settings" in user_message_json:
+        if "task" in user_message_json["prompt_settings"]:
+            cat.working_memory["task"] = user_message_json["prompt_settings"]["task"]
 
-    if "language" in user_message_json["prompt_settings"]:
-        cat.working_memory["language"] = user_message_json["prompt_settings"]["language"]
+        if "language" in user_message_json["prompt_settings"]:
+            cat.working_memory["language"] = user_message_json["prompt_settings"]["language"]
 
     return user_message_json
 
