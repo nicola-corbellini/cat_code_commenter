@@ -4,12 +4,8 @@ Here is a collection of methods to hook the prompts components that instruct the
 
 """
 
-import time
 from typing import List, Dict
-from datetime import timedelta
-from langchain.docstore.document import Document
 
-from cat.utils import verbal_timedelta
 from cat.mad_hatter.decorators import hook
 
 

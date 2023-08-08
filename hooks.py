@@ -12,21 +12,19 @@ from cat.log import log
 # Useful to edit/enrich user input (e.g. translation)
 @hook(priority=1)
 def before_cat_reads_message(user_message_json: dict, cat) -> dict:
-    # Get task
-    if "prompt_settings" in user_message_json:
-        if "task" in user_message_json["prompt_settings"]:
-            cat.working_memory["task"] = user_message_json["prompt_settings"]["task"]
+    # Delete task from working memory if exists
+    if "task" in cat.working_memory:
+        cat.working_memory.pop("task")
 
-        if "language" in user_message_json["prompt_settings"]:
-            cat.working_memory["language"] = user_message_json["prompt_settings"]["language"]
+    # Get task
+    if "prompt_settings" in user_message_json and "task" in user_message_json["prompt_settings"]:
+        cat.working_memory["task"] = user_message_json["prompt_settings"]["task"]
 
     return user_message_json
 
 
-# Hook called just before sending response to a client.
 @hook(priority=1)
 def before_cat_sends_message(message: dict, cat):
-
     # Add valid code check in JSON response
     if "task" in cat.working_memory and cat.working_memory["task"] == "comment":
         answer = cat.llm(
@@ -41,8 +39,6 @@ def before_cat_sends_message(message: dict, cat):
             """)
 
         message["content"] = answer
-
-        cat.working_memory.pop("task")
 
     log(message, "ERROR")
 
